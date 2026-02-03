@@ -18,16 +18,25 @@ pipe.load_lora(pipe.vace, "models/train/Wan2.1-VACE-1.3B_lora/step-2800.safetens
 video = VideoData("data_infer/processed/pose/dance-1_1_pose.mp4", height=480, width=832)
 video = [video[i] for i in range(65)]
 
-ref_img = VideoData("data_infer/ref_img.jpg", height=480, width=832)[0]
-ref_img_1 = VideoData("data_infer/ref_img_1.jpg", height=480, width=832)[0]
-ref_img_2 = VideoData("data_infer/ref_img_2.jpg", height=480, width=832)[0]
-ref_img_3 = VideoData("data_infer/ref_img_3.jpg", height=480, width=832)[0]
-ref_img_4 = VideoData("data_infer/ref_img_4.jpg", height=480, width=832)[0]
+ref_img = VideoData("data_infer/other_1.jpg", height=480, width=832)[0]
+#ref_img_1 = VideoData("data_infer/ref_img_1.jpg", height=480, width=832)[0]
+#ref_img_2 = VideoData("data_infer/ref_img_2.jpg", height=480, width=832)[0]
+#ref_img_3 = VideoData("data_infer/ref_img_3.jpg", height=480, width=832)[0]
+#ref_img_4 = VideoData("data_infer/ref_img_4.jpg", height=480, width=832)[0]
 
+#vace_reference_video=[ref_img, ref_img_1, ref_img_2, ref_img_3, ref_img_4]
+vace_reference_video=ref_img
+
+prompt=("Man is dancing by following the video pose exactly. Dance is natural and smooth.",
+        " Maintain the exact facial features, hair, clothing and background from the reference image.",
+        "Keep the background consistent with the reference image.",
+	"Man is bearing blue pants, white shoes and black t-shirt."
+)
 video = pipe(
-    prompt="Person is dancing by following the video pose exactly. Dance is natural and smooth. Maintain the exact facial features, hair, clothing, and background from the reference images. Keep the background consistent with the reference images.",
+    prompt=prompt,
     negative_prompt="色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走",
-    vace_video=video, vace_reference_image=[ref_img, ref_img_1, ref_img_2, ref_img_3, ref_img_4], num_frames=65,
-    seed=1, tiled=True
+    vace_video=video, 
+    vace_reference_image=vace_reference_video,
+    num_frames=65, seed=1, tiled=True
 )
 save_video(video, "results/lora_dance_1.mp4", fps=15, quality=9)
