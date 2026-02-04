@@ -4,7 +4,7 @@ from datetime import datetime
 from diffsynth.utils.data import save_video, VideoData
 from diffsynth.pipelines.wan_video import WanVideoPipeline, ModelConfig
 
-ALPHA=2
+ALPHA=1
 
 PROMPT="""
 A man is dancing by following the pose video exactly. Natural and smooth movements.
@@ -23,7 +23,7 @@ wandb.init(
     name=run_name,
     config={
         "alpha": ALPHA,
-        "prompt": PROMPT if 'PROMPT' in dir() else "TBD",
+        "prompt": PROMPT,
         "num_frames": 65,
         "height": 480,
         "width": 832,
@@ -63,13 +63,7 @@ video = pipe(
 )
 save_video(video, "lora_dance.mp4", fps=15, quality=9)
 
-# Log the video to W&B with proper format
-wandb.log({
-    "generated_video": wandb.Video("lora_dance.mp4", format="mp4"),
-    "alpha": ALPHA,
-})
-
-# Also log video with caption for better visualization in charts
+# Log the video
 wandb.log({
     "video_output": wandb.Video("lora_dance.mp4", format="mp4", caption=f"Generated dance video - Alpha: {ALPHA}")
 })
